@@ -1,0 +1,9 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "services": "Services",
+    "projects": "Projets",
+    "contact": "Contact",
+    "cta": "Prendre rendez-vous"
+  }
+}
