@@ -117,9 +117,13 @@ export default function Contact() {
           <div className="space-y-8">
             <div className="border border-border p-8">
               <h2 className="font-serif text-xl font-light mb-6">{t(content, 'contact_booking_title', lang)}</h2>
-              <div className="h-32 border border-dashed border-border flex items-center justify-center mb-6 bg-cream-dark">
-                <p className="text-xs text-muted tracking-widest uppercase">Booking widget</p>
-              </div>
+              <div className="py-6 mb-6">
+  <p className="text-sm text-muted leading-relaxed">
+    {lang === 'en'
+      ? 'Book a free 30-minute discovery call directly in our calendar.'
+      : 'Réservez un appel découverte de 30 minutes directement dans notre agenda.'}
+  </p>
+</div>
               <a href={bookingUrl} target="_blank" rel="noopener noreferrer"
                 className="block w-full text-center py-3.5 border border-gold text-gold text-sm font-medium tracking-widest uppercase hover:bg-gold hover:text-ink transition-all">
                 {lang === 'en' ? 'Book appointment' : 'Prendre rendez-vous'} →
