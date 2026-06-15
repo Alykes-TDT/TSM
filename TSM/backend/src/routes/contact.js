@@ -21,15 +21,20 @@ router.post('/', limiter, async (req, res) => {
   }
 
   try {
-const transporter = nodemailer.createTransport({
-  host: 'smtp.resend.com',
-  port: 465,
-  secure: true,
-  auth: { 
-    user: 'resend', 
-    pass: process.env.SMTP_PASS 
+const response = await fetch('https://api.resend.com/emails', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+    'Content-Type': 'application/json',
   },
+  body: JSON.stringify({
+    from: 'TSM — Conseil IA <onboarding@resend.dev>',
+    to: process.env.CONTACT_EMAIL,
+    subject: `Nouvelle demande — ${subject}`,
+    html: `... your existing html ...`,
+  }),
 })
+if (!response.ok) throw new Error(await response.text())
 
     await transporter.sendMail({
       from: `"TSM — Conseil IA" <${process.env.SMTP_USER}>`,
