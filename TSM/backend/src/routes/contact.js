@@ -1,7 +1,5 @@
-const express    = require('express')
-const nodemailer = require('nodemailer')
-const rateLimit  = require('express-rate-limit')
-
+const express   = require('express')
+const rateLimit = require('express-rate-limit')
 const router = express.Router()
 
 const limiter = rateLimit({
@@ -21,44 +19,38 @@ router.post('/', limiter, async (req, res) => {
   }
 
   try {
-const response = await fetch('https://api.resend.com/emails', {
-  method: 'POST',
-  headers: {
-    'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    from: 'TSM — Conseil IA <onboarding@resend.dev>',
-    to: process.env.CONTACT_EMAIL,
-    subject: `Nouvelle demande — ${subject}`,
-    html: `... your existing html ...`,
-  }),
-})
-if (!response.ok) throw new Error(await response.text())
-
-    await transporter.sendMail({
-      from: `"TSM — Conseil IA" <${process.env.SMTP_USER}>`,
-      to: process.env.CONTACT_EMAIL,
-      subject: `Nouvelle demande — ${subject}`,
-      html: `
-        <div style="font-family:Inter,sans-serif;max-width:600px;margin:0 auto;background:#0A0A0A;color:#fff;padding:32px;border-radius:12px">
-          <h2 style="color:#C9A84C;margin-bottom:24px">Nouvelle demande de contact</h2>
-          <table style="width:100%;border-collapse:collapse">
-            <tr><td style="padding:8px 0;color:#ffffff80;font-size:13px;width:120px">Nom</td><td style="padding:8px 0;font-size:14px">${name}</td></tr>
-            <tr><td style="padding:8px 0;color:#ffffff80;font-size:13px">Entreprise</td><td style="padding:8px 0;font-size:14px">${company || '—'}</td></tr>
-            <tr><td style="padding:8px 0;color:#ffffff80;font-size:13px">Email</td><td style="padding:8px 0;font-size:14px"><a href="mailto:${email}" style="color:#C9A84C">${email}</a></td></tr>
-            <tr><td style="padding:8px 0;color:#ffffff80;font-size:13px">Objet</td><td style="padding:8px 0;font-size:14px">${subject}</td></tr>
-          </table>
-          <div style="margin-top:24px;padding:20px;background:#1a1a1a;border-radius:8px;border-left:3px solid #C9A84C">
-            <p style="color:#ffffff80;font-size:12px;margin-bottom:8px">Message</p>
-            <p style="font-size:14px;line-height:1.7;white-space:pre-wrap">${message}</p>
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'TSM — Conseil IA <onboarding@resend.dev>',
+        to: process.env.CONTACT_EMAIL,
+        subject: `Nouvelle demande — ${subject}`,
+        html: `
+          <div style="font-family:Inter,sans-serif;max-width:600px;margin:0 auto;background:#0A0A0A;color:#fff;padding:32px;border-radius:12px">
+            <h2 style="color:#C9A84C;margin-bottom:24px">Nouvelle demande de contact</h2>
+            <table style="width:100%;border-collapse:collapse">
+              <tr><td style="padding:8px 0;color:#ffffff80;font-size:13px;width:120px">Nom</td><td style="padding:8px 0;font-size:14px">${name}</td></tr>
+              <tr><td style="padding:8px 0;color:#ffffff80;font-size:13px">Entreprise</td><td style="padding:8px 0;font-size:14px">${company || '—'}</td></tr>
+              <tr><td style="padding:8px 0;color:#ffffff80;font-size:13px">Email</td><td style="padding:8px 0;font-size:14px"><a href="mailto:${email}" style="color:#C9A84C">${email}</a></td></tr>
+              <tr><td style="padding:8px 0;color:#ffffff80;font-size:13px">Objet</td><td style="padding:8px 0;font-size:14px">${subject}</td></tr>
+            </table>
+            <div style="margin-top:24px;padding:20px;background:#1a1a1a;border-radius:8px;border-left:3px solid #C9A84C">
+              <p style="color:#ffffff80;font-size:12px;margin-bottom:8px">Message</p>
+              <p style="font-size:14px;line-height:1.7;white-space:pre-wrap">${message}</p>
+            </div>
+            <p style="margin-top:24px;color:#ffffff40;font-size:12px">© 2025 TSM — Conseil IA</p>
           </div>
-          <p style="margin-top:24px;color:#ffffff40;font-size:12px">© 2025 TSM — Conseil IA</p>
-        </div>
-      `,
+        `,
+      }),
     })
 
+    if (!response.ok) throw new Error(await response.text())
     return res.json({ success: true })
+
   } catch (err) {
     console.error('[CONTACT]', err.message)
     return res.status(500).json({ success: false, error: 'Erreur serveur.' })
